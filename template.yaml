@@ -1,0 +1,104 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: ClassCharts calendar sync function to iCal
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Timeout: 300
+    MemorySize: 256
+    Architectures:
+      - x86_64
+    Environment:
+      Variables:
+        BUCKET_NAME: !Ref ClasschartsCalendarBucket
+        CALENDAR_FILENAME: !Ref CalendarFilename
+        SECRET_NAME: !Ref SecretName
+        AWS_ACCOUNT_ID: !Ref AWS::AccountId
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    Description: Environment name
+  BucketName:
+    Type: String
+    Default: classcharts-calendar
+    Description: Name of the S3 bucket for the calendar
+  CalendarFilename:
+    Type: String
+    Default: ical.ics
+    Description: File name of the calendar file in S3
+  SecretName:
+    Type: String
+    Default: classcharts/credentials
+    Description: Name of the secret in AWS Secrets Manager
+
+Resources:
+  ClasschartsCalendarFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      # Commenting out the Powertools layer due to permission issues
+      # Layers:
+      #   - !Sub arn:aws:lambda:${AWS::Region}:017000801446:layer:AWSLambdaPowertoolsPython:56
+      CodeUri: ./
+      Handler: main.lambda_handler
+      Events:
+        Schedule:
+          Type: Schedule
+          Properties:
+            Schedule: rate(6 hours)
+            Name: ClasschartsCalendarSchedule
+            Description: Runs the calendar sync every 6 hours
+            Enabled: true
+      Policies:
+        - S3WritePolicy:
+            BucketName: !Join ['-', [!Ref BucketName, !Ref Environment, !Ref AWS::AccountId]]
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${SecretName}*'
+
+  ClasschartsCalendarBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join ['-', [!Ref BucketName, !Ref Environment, !Ref AWS::AccountId]]
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        IgnorePublicAcls: false
+        BlockPublicPolicy: false
+        RestrictPublicBuckets: false
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: ObjectWriter
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+
+  ClasschartsCalendarBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ClasschartsCalendarBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Sub '${ClasschartsCalendarBucket.Arn}/*'
+
+Outputs:
+  ClasschartsCalendarFunction:
+    Description: "Calendar sync Lambda Function ARN"
+    Value: !GetAtt ClasschartsCalendarFunction.Arn
+  ClasschartsCalendarFunctionIamRole:
+    Description: "Implicit IAM Role created for the function"
+    Value: !GetAtt ClasschartsCalendarFunctionRole.Arn
+  ClasschartsCalendarBucketWebsite:
+    Description: "URL of the calendar website"
+    Value: !Sub "http://${ClasschartsCalendarBucket}.s3-website-${AWS::Region}.amazonaws.com"
+  ClasschartsCalendarBucketName:
+    Description: "Name of the S3 bucket for the calendar"
+    Value: !Ref ClasschartsCalendarBucket
