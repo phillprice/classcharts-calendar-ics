@@ -19,7 +19,7 @@ def secret_data():
     return {
         "email": "test@example.com",
         "password": "test-password",
-        "student_id": 1234562
+        "student_ids": [1234562, 7654321]
     }
 
 @pytest.fixture
@@ -50,6 +50,10 @@ def classcharts_pupils_response():
             {
                 "id": 1234562,
                 "name": "Ava Test"
+            },
+            {
+                "id": 7654321,
+                "name": "Ben Test"
             }
         ]
     }
@@ -59,6 +63,14 @@ def classcharts_timetable_response():
     return {
         "meta": {
             "timetable_dates": ["2024-06-12"]
+        }
+    }
+
+@pytest.fixture
+def classcharts_pupil_details_response():
+    return {
+        "data": {
+            "name": "Ava Test"
         }
     }
 
@@ -127,6 +139,7 @@ def test_lambda_handler_success(setup_secretsmanager, setup_s3,
                                classcharts_login_response,
                                classcharts_pupils_response,
                                classcharts_timetable_response,
+                               classcharts_pupil_details_response,
                                classcharts_lessons_response):
     # Mock ClassCharts API responses
     import config
@@ -143,23 +156,61 @@ def test_lambda_handler_success(setup_secretsmanager, setup_s3,
     # Mock pupils API
     responses.add(
         responses.GET,
-        "https://www.classcharts.com/apiv2parent/pupils",
+        f"{base_url}pupils",
         json=classcharts_pupils_response,
         status=200
     )
     
-    # Mock timetable API
+    # Mock the first student
+    student_id_1 = 1234562
+    
+    # Mock pupil details API for first student
     responses.add(
         responses.GET,
-        f"{base_url}timetable/1234562",
+        f"{base_url}pupil/{student_id_1}",
+        json=classcharts_pupil_details_response,
+        status=200
+    )
+    
+    # Mock timetable API for first student
+    responses.add(
+        responses.GET,
+        f"{base_url}timetable/{student_id_1}",
         json=classcharts_timetable_response,
         status=200
     )
     
-    # Mock timetable date API
+    # Mock timetable date API for first student
     responses.add(
         responses.GET,
-        f"{base_url}timetable/1234562?date=2024-06-12",
+        f"{base_url}timetable/{student_id_1}?date=2024-06-12",
+        json=classcharts_lessons_response,
+        status=200
+    )
+    
+    # Mock the second student
+    student_id_2 = 7654321
+    
+    # Mock pupil details API for second student
+    responses.add(
+        responses.GET,
+        f"{base_url}pupil/{student_id_2}",
+        json={"data": {"name": "Ben Test"}},
+        status=200
+    )
+    
+    # Mock timetable API for second student
+    responses.add(
+        responses.GET,
+        f"{base_url}timetable/{student_id_2}",
+        json=classcharts_timetable_response,
+        status=200
+    )
+    
+    # Mock timetable date API for second student
+    responses.add(
+        responses.GET,
+        f"{base_url}timetable/{student_id_2}?date=2024-06-12",
         json=classcharts_lessons_response,
         status=200
     )
@@ -169,15 +220,22 @@ def test_lambda_handler_success(setup_secretsmanager, setup_s3,
     
     # Verify response
     assert response['statusCode'] == 200
-    assert 'message' in json.loads(response['body'])
-    assert json.loads(response['body'])['message'] == 'Calendar successfully updated'
+    response_body = json.loads(response['body'])
+    assert 'message' in response_body
+    assert response_body['message'] == 'Calendars successfully updated'
+    assert 'calendars' in response_body
+    assert len(response_body['calendars']) == 2
     
     # Verify S3 upload
     import config
     s3 = boto3.client('s3', region_name=config.AWS_REGION)
     objects = s3.list_objects_v2(Bucket=config.BUCKET_NAME)
-    assert objects['KeyCount'] == 1
-    assert objects['Contents'][0]['Key'] == config.CALENDAR_FILENAME
+    assert objects['KeyCount'] == 2  # Two files should be created
+    
+    # Check calendar filenames
+    keys = [obj['Key'] for obj in objects['Contents']]
+    assert "1234562.ics" in keys
+    assert "7654321.ics" in keys
 
 
 @freeze_time("2024-06-12")
@@ -199,6 +257,7 @@ def test_citizenshi_renamed_to_a2b(setup_secretsmanager, setup_s3,
                                  classcharts_login_response,
                                  classcharts_pupils_response,
                                  classcharts_timetable_response,
+                                 classcharts_pupil_details_response,
                                  classcharts_lessons_response):
     # Mock ClassCharts API responses
     import config
@@ -215,34 +274,45 @@ def test_citizenshi_renamed_to_a2b(setup_secretsmanager, setup_s3,
     # Mock pupils API
     responses.add(
         responses.GET,
-        "https://www.classcharts.com/apiv2parent/pupils",
+        f"{base_url}pupils",
         json=classcharts_pupils_response,
         status=200
     )
     
-    # Mock timetable API
-    responses.add(
-        responses.GET,
-        f"{base_url}timetable/1234562",
-        json=classcharts_timetable_response,
-        status=200
-    )
-    
-    # Mock timetable date API
-    responses.add(
-        responses.GET,
-        f"{base_url}timetable/1234562?date=2024-06-12",
-        json=classcharts_lessons_response,
-        status=200
-    )
+    # Mock both students
+    for student_id in [1234562, 7654321]:
+        # Mock pupil details API
+        responses.add(
+            responses.GET,
+            f"{base_url}pupil/{student_id}",
+            json={"data": {"name": f"Student {student_id}"}},
+            status=200
+        )
+        
+        # Mock timetable API
+        responses.add(
+            responses.GET,
+            f"{base_url}timetable/{student_id}",
+            json=classcharts_timetable_response,
+            status=200
+        )
+        
+        # Mock timetable date API
+        responses.add(
+            responses.GET,
+            f"{base_url}timetable/{student_id}?date=2024-06-12",
+            json=classcharts_lessons_response,
+            status=200
+        )
     
     # Track calls to print to verify subject renaming
     with patch('builtins.print') as mock_print:
         # Call the Lambda handler
         main.lambda_handler({}, None)
         
-        # Check if the print function was called with the renamed subject
-        mock_print.assert_any_call("Adding lesson: A2B - Ms Citizenship")
+        # Check if the print function was called with the renamed subject for both students
+        mock_print.assert_any_call("Adding lesson for Student 1234562: A2B - Ms Citizenship")
+        mock_print.assert_any_call("Adding lesson for Student 7654321: A2B - Ms Citizenship")
 
 
 @freeze_time("2024-06-12")

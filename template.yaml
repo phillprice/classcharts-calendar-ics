@@ -12,7 +12,7 @@ Globals:
     Environment:
       Variables:
         BUCKET_NAME: !Ref ClasschartsCalendarBucket
-        CALENDAR_FILENAME: !Ref CalendarFilename
+        CALENDAR_FILENAME_TEMPLATE: !Ref CalendarFilenameTemplate
         SECRET_NAME: !Ref SecretName
         AWS_ACCOUNT_ID: !Ref AWS::AccountId
 
@@ -25,10 +25,10 @@ Parameters:
     Type: String
     Default: classcharts-calendar
     Description: Name of the S3 bucket for the calendar
-  CalendarFilename:
+  CalendarFilenameTemplate:
     Type: String
-    Default: ical.ics
-    Description: File name of the calendar file in S3
+    Default: "{student_id}.ics"
+    Description: Template for calendar filenames (supports {student_id} and {student_name} placeholders)
   SecretName:
     Type: String
     Default: classcharts/credentials
