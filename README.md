@@ -106,13 +106,23 @@ The following environment variables can be configured:
 |----------|---------|-------------|
 | `AWS_REGION` | `eu-west-2` | AWS region to use |
 | `BUCKET_NAME` | `classcharts-calendar-{account-id}` | S3 bucket name for the calendar (automatically appends your AWS account ID for uniqueness) |
-| `CALENDAR_FILENAME` | `ical.ics` | Filename for the calendar in S3 |
+| `CALENDAR_FILENAME_TEMPLATE` | `{student_id}.ics` | Template for calendar filenames (supports `{student_id}` and `{student_name}` placeholders) |
 | `SECRET_NAME` | `classcharts/credentials` | Name of the secret in AWS Secrets Manager |
 
 ### AWS Secrets Manager Configuration
 
 
 Create a secret in AWS Secrets Manager with the following values:
+
+```json
+{
+  "email": "your-classcharts-email@example.com",
+  "password": "your-classcharts-password",
+  "student_ids": [1234562, 7654321]
+}
+```
+
+For a single student, you can either use the array format above or use the legacy format with a single `student_id` key:
 
 ```json
 {
@@ -125,6 +135,13 @@ Create a secret in AWS Secrets Manager with the following values:
 Use the following AWS CLI command (replace with your values):
 
 ```bash
+# For multiple students
+aws secretsmanager create-secret \
+    --name classcharts/credentials \
+    --secret-string '{"email":"your-email@example.com","password":"your-password","student_ids":[1234562, 7654321]}' \
+    --region eu-west-2
+
+# For a single student (legacy format)
 aws secretsmanager create-secret \
     --name classcharts/credentials \
     --secret-string '{"email":"your-email@example.com","password":"your-password","student_id":1234562}' \
@@ -139,7 +156,7 @@ During deployment with SAM, you can override the default values:
 sam deploy --guided \
   --parameter-overrides \
   BucketName=my-custom-bucket \
-  CalendarFilename=calendar.ics \
+  CalendarFilenameTemplate="{student_name}_{student_id}.ics" \
   SecretName=my/custom/secret/path
 ```
 
@@ -261,20 +278,21 @@ Replace `classcharts-calendar-ClasschartsCalendarFunction-XXXXXXXXXXXX` with the
 
 ## Calendar Access
 
-After deployment, the calendar will be accessible at a URL that includes your AWS account ID, for example:
+After deployment, each student's calendar will be accessible at a URL that includes your AWS account ID and the student ID, for example:
 
 ```text
-https://classcharts-calendar-123456789012.s3.amazonaws.com/ical.ics
+https://classcharts-cal-dev-123456789012.s3.amazonaws.com/1234562.ics
+https://classcharts-cal-dev-123456789012.s3.amazonaws.com/7654321.ics
 ```
 
-The exact bucket name will be shown in the deployment outputs as `ClasschartsCalendarBucketName`. You can also find the full URL in the Lambda function's response.
+The exact bucket name will be shown in the deployment outputs as `ClasschartsCalendarBucketName`. You can also find all calendar URLs in the Lambda function's response, which will include a list of all generated calendars.
 
-**Note:** The calendar file is intentionally public to allow calendar applications to subscribe to it without authentication. This is achieved through:
+**Note:** The calendar files are intentionally public to allow calendar applications to subscribe to them without authentication. This is achieved through:
 
 - S3 bucket policy that allows public read access
-- `public-read` ACL set on the file during upload
+- `public-read` ACL set on the files during upload
 
-You can add this URL to your calendar application as a subscription.
+You can add these URLs to your calendar application as subscriptions. Each student's timetable will be in a separate calendar file, allowing you to color-code or enable/disable them individually in your calendar application.
 
 ## Project Structure
 

@@ -14,7 +14,7 @@ AWS_REGION = os.environ.get('AWS_REGION', 'eu-west-2')
 # The BUCKET_NAME is set by the SAM template and already includes the account ID
 BUCKET_NAME = os.environ.get('BUCKET_NAME', 'classcharts-calendar-local')
 
-CALENDAR_FILENAME = os.environ.get('CALENDAR_FILENAME', 'ical.ics')
+CALENDAR_FILENAME_TEMPLATE = os.environ.get('CALENDAR_FILENAME_TEMPLATE', '{student_id}.ics')
 CALENDAR_CONTENT_TYPE = 'text/calendar'
 
 # AWS Secrets Manager Configuration

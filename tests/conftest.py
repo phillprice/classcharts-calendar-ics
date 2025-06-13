@@ -6,7 +6,7 @@ def mock_config_env(monkeypatch):
     """Configure environment variables for testing"""
     monkeypatch.setenv("AWS_REGION", "eu-west-2")
     monkeypatch.setenv("BUCKET_NAME", "classcharts-calendar")
-    monkeypatch.setenv("CALENDAR_FILENAME", "ical.ics")
+    monkeypatch.setenv("CALENDAR_FILENAME_TEMPLATE", "{student_id}.ics")
     monkeypatch.setenv("SECRET_NAME", "classcharts/credentials")
     
     # Set test AWS credentials
