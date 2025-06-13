@@ -414,9 +414,17 @@ To set up automated deployment:
    - `AWS_ACCESS_KEY_ID`: Your AWS access key
    - `AWS_SECRET_ACCESS_KEY`: Your AWS secret key
 
-2. The deployment will trigger automatically on pushes to your main branch that change code files.
+2. Make sure your AWS credentials have permission to:
+   - Create/update CloudFormation stacks
+   - Create/update Lambda functions
+   - Create/update S3 buckets
+   - Create/read Secrets Manager secrets
 
-3. You can also manually trigger a deployment:
+3. The deployment will trigger automatically on pushes to your main branch that change code files.
+
+4. You can also manually trigger a deployment:
    - Go to the "Actions" tab
    - Select "Deploy with SAM" workflow
    - Click "Run workflow"
+
+5. The GitHub Actions workflow is configured to deploy with the stack name `classcharts-calendar-prod` by default.
