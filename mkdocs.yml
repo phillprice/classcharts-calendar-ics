@@ -1,0 +1,74 @@
+site_name: ClassCharts Calendar Sync
+site_url: https://phillprice.github.io/classcharts-calendar-ics
+site_author: Phill Price
+site_description: A serverless application that syncs ClassCharts timetable data to iCalendar files
+
+repo_name: phillprice/classcharts-calendar-ics
+repo_url: https://github.com/phillprice/classcharts-calendar-ics
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    primary: indigo
+    accent: blue
+  features:
+    - navigation.tabs
+    - navigation.instant
+    - navigation.top
+    - search.highlight
+    - search.share
+  icon:
+    repo: fontawesome/brands/github
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/phillprice
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/phillprice
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - attr_list
+  - md_in_html
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Configuration:
+    - Overview: configuration/index.md
+    - Environment Variables: configuration/environment-variables.md
+    - AWS Secrets Manager: configuration/secrets-manager.md
+    - SAM Parameters: configuration/sam-parameters.md
+  - Deployment:
+    - Overview: deployment/index.md
+    - Standard Deployment: deployment/standard.md
+    - Advanced Options: deployment/advanced.md
+    - Troubleshooting: deployment/troubleshooting.md
+  - Development:
+    - Environment Setup: development/environment-setup.md
+    - Local Testing: development/local-testing.md
+    - Testing: development/testing.md
+  - Usage:
+    - Calendar Access: usage/calendar-access.md
+    - Calendar Applications: usage/calendar-applications.md
+  - Project Information:
+    - Structure: project/structure.md
+    - Contributing: project/contributing.md
+    - License: project/license.md
+
+plugins:
+  - search
+  - minify:
+      minify_html: true

@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+.hypothesis/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# AWS SAM
+.aws-sam/
+packaged.yaml
+samconfig.toml
+
+# Build and deployment
+package/
+deployment-package.zip
+
+# Generated local files
+*.ics
+tmp/
+.DS_Store
+
+# Editor files
+.vscode/
+.idea/
