@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://phillprice.github.io/classcharts-calendar-ics/</loc>
+         <lastmod>2025-06-16</lastmod>
+    </url>
+    <url>
+         <loc>https://phillprice.github.io/classcharts-calendar-ics/getting-started/</loc>
+         <lastmod>2025-06-16</lastmod>
+    </url>
+    <url>
+         <loc>https://phillprice.github.io/classcharts-calendar-ics/configuration/</loc>
+         <lastmod>2025-06-16</lastmod>
+    </url>
+    <url>
+         <loc>https://phillprice.github.io/classcharts-calendar-ics/configuration/environment-variables/</loc>
+         <lastmod>2025-06-16</lastmod>
+    </url>
+    <url>
+         <loc>https://phillprice.github.io/classcharts-calendar-ics/configuration/sam-parameters/</loc>
+         <lastmod>2025-06-16</lastmod>
+    </url>
+    <url>
+         <loc>https://phillprice.github.io/classcharts-calendar-ics/configuration/secrets-manager/</loc>
+         <lastmod>2025-06-16</lastmod>
+    </url>
+    <url>
+         <loc>https://phillprice.github.io/classcharts-calendar-ics/deployment/</loc>
+         <lastmod>2025-06-16</lastmod>
+    </url>
+    <url>
+         <loc>https://phillprice.github.io/classcharts-calendar-ics/project/structure/</loc>
+         <lastmod>2025-06-16</lastmod>
+    </url>
+</urlset>
