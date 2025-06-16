@@ -1,6 +1,6 @@
 # ClassCharts Calendar Sync
 
-[![GitHub Actions Status](https://github.com/phillprice/classcharts-calendar-ics/workflows/Tests/badge.svg)](https://github.com/phillprice/classcharts-calendar-ics/actions)
+[![Run Tests](https://github.com/phillprice/classcharts-calendar-ics/actions/workflows/test.yml/badge.svg)](https://github.com/phillprice/classcharts-calendar-ics/actions/workflows/test.yml)
 [![Documentation](https://img.shields.io/badge/docs-online-brightgreen.svg)](https://phillprice.github.io/classcharts-calendar-ics/)
 
 A serverless application that automatically syncs ClassCharts timetable data to iCalendar files, making school schedules easily accessible across all calendar applications. The system fetches data from ClassCharts and generates calendar files that are hosted on Amazon S3, allowing seamless subscription from Apple Calendar, Google Calendar, Outlook, and other calendar applications.
