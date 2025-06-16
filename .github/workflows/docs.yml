@@ -7,6 +7,7 @@ on:
       - 'docs/**'
       - 'mkdocs.yml'
       - '.github/workflows/docs.yml'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -36,9 +37,5 @@ jobs:
         
       # No custom domain setup needed
           
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
-          full_commit_message: 'docs: update documentation site'
+      # The mkdocs gh-deploy already handles the GitHub Pages deployment
+      # No need for a separate deployment step
