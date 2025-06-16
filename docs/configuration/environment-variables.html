@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Environment Variables</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    pre, code {
+      background-color: #f6f8fa;
+      border-radius: 3px;
+      padding: 0.2em 0.4em;
+      font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    pre {
+      padding: 16px;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      background-color: transparent;
+    }
+    a {
+      color: #0366d6;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 20px 0;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #f6f8fa;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="environmentvariables">Environment Variables</h1>
+<p>The ClassCharts Calendar Sync application uses environment variables for configuration. These variables can be set in different ways depending on whether you're running in production or local development environments.</p>
+<h2 id="productionenvironmentvariables">Production Environment Variables</h2>
+<p>These variables are set during deployment and used in the Lambda environment:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+<th style="text-align:center;">Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AWS_REGION</code></td>
+<td><code>eu-west-2</code></td>
+<td>AWS region for operations</td>
+<td style="text-align:center;">Auto-set by Lambda</td>
+</tr>
+<tr>
+<td><code>BUCKET_NAME</code></td>
+<td><code>classcharts-calendar-{account-id}</code></td>
+<td>S3 bucket name for calendars</td>
+<td style="text-align:center;">Yes</td>
+</tr>
+<tr>
+<td><code>CALENDAR_FILENAME_TEMPLATE</code></td>
+<td><code>{student_id}.ics</code></td>
+<td>Template for calendar filenames</td>
+<td style="text-align:center;">No</td>
+</tr>
+<tr>
+<td><code>SECRET_NAME</code></td>
+<td><code>classcharts/credentials</code></td>
+<td>Name for credentials in Secrets Manager</td>
+<td style="text-align:center;">Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="localtestingenvironmentvariables">Local Testing Environment Variables</h2>
+<p>These variables are for local development and testing without AWS resources:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Default</th>
+<th>Description</th>
+<th style="text-align:center;">Required for Local Testing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LOCAL_TESTING</code></td>
+<td><code>false</code></td>
+<td>Set to <code>true</code> to enable local testing mode</td>
+<td style="text-align:center;">Yes</td>
+</tr>
+<tr>
+<td><code>TEST_EMAIL</code></td>
+<td>None</td>
+<td>ClassCharts parent account email</td>
+<td style="text-align:center;">Yes</td>
+</tr>
+<tr>
+<td><code>TEST_PASSWORD</code></td>
+<td>None</td>
+<td>ClassCharts parent account password</td>
+<td style="text-align:center;">Yes</td>
+</tr>
+<tr>
+<td><code>TEST_STUDENT_ID</code></td>
+<td>None</td>
+<td>ClassCharts student ID</td>
+<td style="text-align:center;">Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="settingenvironmentvariables">Setting Environment Variables</h2>
+<h3 id="inawslambdaproduction">In AWS Lambda (Production)</h3>
+<p>Environment variables in production are set via the SAM template:</p>
+<pre><code class="yaml language-yaml"># From template.yaml
+Environment:
+  Variables:
+    BUCKET_NAME: !Ref ClasschartsCalendarBucket
+    CALENDAR_FILENAME_TEMPLATE: !Ref CalendarFilenameTemplate
+    SECRET_NAME: !Ref SecretName
+    AWS_ACCOUNT_ID: !Ref AWS::AccountId
+</code></pre>
+<h3 id="forlocaltesting">For Local Testing</h3>
+<h4 id="linuxmacos">Linux/macOS:</h4>
+<pre><code class="bash language-bash">export LOCAL_TESTING=true
+export TEST_EMAIL="your-classcharts-email@example.com"
+export TEST_PASSWORD="your-classcharts-password"
+export TEST_STUDENT_ID="your-student-id"
+</code></pre>
+<h4 id="windowscmd">Windows (CMD):</h4>
+<pre><code class="cmd language-cmd">set LOCAL_TESTING=true
+set TEST_EMAIL=your-classcharts-email@example.com
+set TEST_PASSWORD=your-classcharts-password
+set TEST_STUDENT_ID=your-student-id
+</code></pre>
+<h4 id="windowspowershell">Windows (PowerShell):</h4>
+<pre><code class="powershell language-powershell">$env:LOCAL_TESTING="true"
+$env:TEST_EMAIL="your-classcharts-email@example.com"
+$env:TEST_PASSWORD="your-classcharts-password"
+$env:TEST_STUDENT_ID="your-student-id"
+</code></pre>
+<h2 id="environmentvariabletemplates">Environment Variable Templates</h2>
+<h3 id="filenametemplate">Filename Template</h3>
+<p>The <code>CALENDAR_FILENAME_TEMPLATE</code> variable supports placeholders:</p>
+<ul>
+<li><code>{student_id}</code> - The numeric student ID from ClassCharts</li>
+<li><code>{student_name}</code> - The student's name, with spaces replaced by underscores</li>
+</ul>
+<p>Example templates:</p>
+<pre><code>{student_id}.ics                  # 7419922.ics
+{student_name}_{student_id}.ics   # john_smith_7419922.ics
+calendar_{student_name}.ics       # calendar_john_smith.ics
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><code>AWS_REGION</code> is automatically set by AWS Lambda in production. The environment variable is only used for local development.</li>
+<li>In local testing mode, calendar files are created in the local <code>/tmp</code> directory instead of being uploaded to S3.</li>
+<li>When <code>LOCAL_TESTING=true</code>, AWS Secrets Manager is not used, and credentials are read from environment variables instead.</li>
+</ul>
+</body>
+</html>

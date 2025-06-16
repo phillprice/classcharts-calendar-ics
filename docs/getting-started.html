@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Started</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    pre, code {
+      background-color: #f6f8fa;
+      border-radius: 3px;
+      padding: 0.2em 0.4em;
+      font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    pre {
+      padding: 16px;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      background-color: transparent;
+    }
+    a {
+      color: #0366d6;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 20px 0;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #f6f8fa;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="gettingstarted">Getting Started</h1>
+<p>This guide will help you quickly set up the ClassCharts Calendar Sync application on your AWS account.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Before you begin, ensure you have the following:</p>
+<h3 id="required">Required</h3>
+<ul>
+<li>Python 3.9+ (3.12 recommended)</li>
+<li>pip package manager (included with Python)</li>
+<li>An AWS account with appropriate permissions:</li>
+<li>Lambda: Create and manage functions</li>
+<li>S3: Create buckets and manage objects</li>
+<li>IAM: Create roles and policies</li>
+<li>Secrets Manager: Create and access secrets</li>
+<li>ClassCharts parent account credentials</li>
+</ul>
+<h3 id="developmenttools">Development Tools</h3>
+<ul>
+<li>AWS CLI: For interacting with AWS services</li>
+<li>AWS SAM CLI: For local testing and deployment</li>
+<li>Git: For version control (optional)</li>
+</ul>
+<h2 id="installationsteps">Installation Steps</h2>
+<h3 id="1clonetherepository">1. Clone the Repository</h3>
+<pre><code class="bash language-bash">git clone https://github.com/phillprice/classcharts-calendar-ics.git
+cd classcharts-calendar-ics
+</code></pre>
+<h3 id="2installdependencies">2. Install Dependencies</h3>
+<pre><code class="bash language-bash"># Create a virtual environment (optional but recommended)
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+</code></pre>
+<h3 id="3configureawscredentials">3. Configure AWS Credentials</h3>
+<p>If you haven't configured AWS CLI yet:</p>
+<pre><code class="bash language-bash">aws configure
+</code></pre>
+<p>You'll be prompted to enter:</p>
+<ul>
+<li>AWS Access Key ID</li>
+<li>AWS Secret Access Key</li>
+<li>Default region (e.g., eu-west-2)</li>
+<li>Default output format (json recommended)</li>
+</ul>
+<h3 id="4createawssecretsmanagersecret">4. Create AWS Secrets Manager Secret</h3>
+<p>Store your ClassCharts credentials in AWS Secrets Manager:</p>
+<pre><code class="bash language-bash">aws secretsmanager create-secret \
+    --name classcharts/credentials \
+    --secret-string '{"email":"your-email@example.com","password":"your-password","student_ids":[1234567, 7654321]}' \
+    --region eu-west-2
+</code></pre>
+<p>!!! info "Multiple Students"
+    The <code>student_ids</code> field accepts an array of student IDs for supporting multiple students.</p>
+<h3 id="5buildanddeploy">5. Build and Deploy</h3>
+<pre><code class="bash language-bash"># Build the SAM application
+sam build
+
+# Deploy with guided setup
+sam deploy --guided
+</code></pre>
+<p>During the guided setup, you'll be asked to:</p>
+<ul>
+<li>Enter a stack name (e.g., <code>classcharts-calendar</code>)</li>
+<li>Choose an AWS region</li>
+<li>Configure deployment parameters</li>
+<li>Confirm IAM role creation</li>
+</ul>
+<h2 id="nextsteps">Next Steps</h2>
+<p>After deployment, you should have:</p>
+<ol>
+<li>A Lambda function that runs every 6 hours</li>
+<li>An S3 bucket containing your calendar files</li>
+<li>Public URLs for each student's calendar</li>
+</ol>
+<p>Now you can:</p>
+<ul>
+<li><a href="usage/calendar-applications.md">Add the calendars to your applications</a></li>
+<li><a href="configuration/environment-variables.md">Configure environment variables</a></li>
+<li><a href="development/environment-setup.md">Learn about local development</a></li>
+</ul>
+</body>
+</html>

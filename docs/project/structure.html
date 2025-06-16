@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Structure</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    pre, code {
+      background-color: #f6f8fa;
+      border-radius: 3px;
+      padding: 0.2em 0.4em;
+      font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    pre {
+      padding: 16px;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      background-color: transparent;
+    }
+    a {
+      color: #0366d6;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 20px 0;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #f6f8fa;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="projectstructure">Project Structure</h1>
+<p>This page explains the structure of the ClassCharts Calendar Sync project files and directories.</p>
+<h2 id="directorystructure">Directory Structure</h2>
+<pre><code class="text language-text">.
+├── .github/workflows/     # GitHub Actions CI/CD workflows
+│   ├── sam-deploy.yml    # Automated deployment workflow
+│   └── test.yml          # Automated testing workflow
+├── tests/                # Test files
+│   ├── conftest.py       # Test configuration and fixtures
+│   └── test_main.py      # Main application tests
+├── .aws-sam/            # SAM build artifacts (generated)
+├── .gitignore            # Git ignore file
+├── CONTRIBUTING.md        # Contribution guidelines
+├── LICENSE               # MIT License file
+├── README.md             # Project documentation
+├── config.py             # Configuration settings
+├── main.py               # Lambda function core code
+├── pytest.ini            # Pytest configuration
+├── requirements.txt      # Python dependencies
+├── samconfig.toml        # SAM CLI configuration
+└── template.yaml         # SAM template for AWS resources
+</code></pre>
+<h2 id="keyfilesandcomponents">Key Files and Components</h2>
+<h3 id="corefiles">Core Files</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>main.py</code></td>
+<td>The main application code that runs in the Lambda function</td>
+</tr>
+<tr>
+<td><code>config.py</code></td>
+<td>Configuration module that manages environment variables and defaults</td>
+</tr>
+<tr>
+<td><code>template.yaml</code></td>
+<td>SAM template that defines all AWS resources</td>
+</tr>
+<tr>
+<td><code>requirements.txt</code></td>
+<td>Python package dependencies</td>
+</tr>
+</tbody>
+</table>
+<h3 id="configurationfiles">Configuration Files</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>samconfig.toml</code></td>
+<td>SAM CLI configuration for deployments</td>
+</tr>
+<tr>
+<td><code>pytest.ini</code></td>
+<td>Configuration for the pytest testing framework</td>
+</tr>
+<tr>
+<td><code>.gitignore</code></td>
+<td>Specifies files to exclude from Git version control</td>
+</tr>
+</tbody>
+</table>
+<h3 id="documentationfiles">Documentation Files</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>README.md</code></td>
+<td>Basic project overview and quick start guide</td>
+</tr>
+<tr>
+<td><code>CONTRIBUTING.md</code></td>
+<td>Guidelines for contributing to the project</td>
+</tr>
+<tr>
+<td><code>LICENSE</code></td>
+<td>MIT License for the project</td>
+</tr>
+</tbody>
+</table>
+<h3 id="testfiles">Test Files</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tests/conftest.py</code></td>
+<td>Pytest fixtures and configuration</td>
+</tr>
+<tr>
+<td><code>tests/test_main.py</code></td>
+<td>Unit tests for the main application code</td>
+</tr>
+</tbody>
+</table>
+<h3 id="githubworkflows">GitHub Workflows</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.github/workflows/test.yml</code></td>
+<td>Runs automated tests on pull requests and pushes</td>
+</tr>
+<tr>
+<td><code>.github/workflows/sam-deploy.yml</code></td>
+<td>Deploys the application to AWS on pushes to the main branch</td>
+</tr>
+</tbody>
+</table>
+<h2 id="codeorganization">Code Organization</h2>
+<p>The project follows a simple structure:</p>
+<ul>
+<li><p><code>main.py</code> contains all the application logic, including:</p></li>
+<li><p><code>get_secrets()</code> - Retrieves credentials from AWS Secrets Manager</p></li>
+<li><p><code>generate_calendar_for_student()</code> - Creates calendars for each student</p></li>
+<li><p><code>lambda_handler()</code> - Main entry point for the Lambda function</p></li>
+<li><p><code>config.py</code> centralizes all configuration settings, with:</p></li>
+<li><p>Environment variables with defaults</p></li>
+<li><p>Constants for ClassCharts API interactions</p></li>
+<li><p>Path templates for file storage</p></li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deployment</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    pre, code {
+      background-color: #f6f8fa;
+      border-radius: 3px;
+      padding: 0.2em 0.4em;
+      font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    pre {
+      padding: 16px;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      background-color: transparent;
+    }
+    a {
+      color: #0366d6;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 20px 0;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #f6f8fa;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="deployment">Deployment</h1>
+<p>This section covers how to deploy the ClassCharts Calendar Sync application to AWS.</p>
+<h2 id="deploymentoptions">Deployment Options</h2>
+<ul>
+<li><a href="standard.md">Standard Deployment</a> - The recommended approach for most users</li>
+<li><a href="advanced.md">Advanced Options</a> - Custom configurations, profiles, and parameters</li>
+<li><a href="troubleshooting.md">Troubleshooting</a> - Resolving common deployment issues</li>
+</ul>
+<h2 id="deploymentoverview">Deployment Overview</h2>
+<p>The ClassCharts Calendar Sync application is deployed as an AWS Serverless application consisting of:</p>
+<ol>
+<li><strong>AWS Lambda Function</strong> - Runs the calendar synchronization code</li>
+<li><strong>Amazon S3 Bucket</strong> - Stores the generated calendar files</li>
+<li><strong>CloudWatch Events Rule</strong> - Triggers the Lambda function every 6 hours</li>
+<li><strong>IAM Role and Policies</strong> - Provides the necessary permissions</li>
+</ol>
+<h2 id="deploymentprocess">Deployment Process</h2>
+<p>The deployment process uses the AWS Serverless Application Model (SAM) to deploy the application:</p>
+<ol>
+<li><strong>Build</strong> - Packages the code and dependencies into a deployment package</li>
+<li><strong>Deploy</strong> - Creates or updates the AWS CloudFormation stack</li>
+</ol>
+<pre><code class="bash language-bash"># Build the application
+sam build
+
+# Deploy with guided setup
+sam deploy --guided
+</code></pre>
+<h2 id="deploymentrequirements">Deployment Requirements</h2>
+<p>Before deploying, ensure you have:</p>
+<ol>
+<li>AWS CLI and SAM CLI installed and configured</li>
+<li>AWS credentials with appropriate permissions</li>
+<li>ClassCharts credentials stored in AWS Secrets Manager</li>
+</ol>
+<p>See the <a href="../getting-started.md">Getting Started</a> guide for detailed instructions on setting up these requirements.</p>
+</body>
+</html>
